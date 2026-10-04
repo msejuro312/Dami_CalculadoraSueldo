@@ -16,7 +16,7 @@ class TrabajadorStore(context: Context) {
         bono: Double,
         pension: String,
         area: String,
-        sueldoTotal: String
+        sueldoTotal: Double
     ): Long {
         // PRÁCTICA TEMA 6 - BLOQUE 3:
         // 1. Crear ContentValues y relacionar las cinco columnas con sus valores.
@@ -49,7 +49,7 @@ class TrabajadorStore(context: Context) {
         // 2. Ejecutar query() sobre readableDatabase.
         // 3. Recorrer el Cursor con while (cursor.moveToNext()).
         // 4. Construir cada Solicitud, agregarla a la lista y retornar el resultado.
-        val solicitudes = mutableListOf<Trabajador>()
+        val trabajadores = mutableListOf<Trabajador>()
         val columnas = arrayOf(
             TrabajadorContrato.COLUMNA_ID,
             TrabajadorContrato.COLUMNA_NOMBRE,
@@ -73,49 +73,49 @@ class TrabajadorStore(context: Context) {
             val indiceNombre = cursor.getColumnIndexOrThrow(TrabajadorContrato.COLUMNA_NOMBRE)
             val indiceSueldoBase =
                 cursor.getColumnIndexOrThrow(TrabajadorContrato.COLUMNA_SUELDO_BASE)
-            val indiceCategoria = cursor.getColumnIndexOrThrow(SolicitudContrato.COLUMNA_CATEGORIA)
-            val indicePrioridad = cursor.getColumnIndexOrThrow(SolicitudContrato.COLUMNA_PRIORIDAD)
-            val indiceImagen = cursor.getColumnIndexOrThrow(SolicitudContrato.COLUMNA_RUTA_IMAGEN)
+            val indiceBono = cursor.getColumnIndexOrThrow(TrabajadorContrato.COLUMNA_BONO)
+            val indicePension = cursor.getColumnIndexOrThrow(TrabajadorContrato.COLUMNA_PENSION)
+            val indiceArea = cursor.getColumnIndexOrThrow(TrabajadorContrato.COLUMNA_AREA)
+            val indiceSueldoTotal = cursor.getColumnIndexOrThrow(TrabajadorContrato.COLUMNA_SUELDO_TOTAL)
 
             //moveToNext() avanza fila por fila y devuelve false al terminar
             while (cursor.moveToNext()) {
-                solicitudes.add(
-                    Solicitud(
+                trabajadores.add(
+                    Trabajador(
                         id = cursor.getInt(indiceId),
                         nombre = cursor.getString(indiceNombre),
-                        descripcion = cursor.getString(indiceDescripcion),
-                        categoria = cursor.getString(indiceCategoria),
-                        prioridad = cursor.getString(indicePrioridad),
-                        rutaImagen = if (cursor.isNull(indiceImagen)) {
-                            null
-                        } else {
-                            cursor.getString(indiceImagen)
-                        }
+                        sueldoBase = cursor.getDouble(indiceSueldoBase),
+                        bono = cursor.getDouble(indiceBono),
+                        pension = cursor.getString(indicePension),
+                        area = cursor.getString(indiceArea),
+                        sueldoTotal = cursor.getDouble(indiceSueldoTotal)
+
                     )
                 )
             }
         }
 
 
-        return solicitudes
+        return trabajadores
     }
 
-    fun actualizar(solicitud: Solicitud): Int {
+    fun actualizar(trabajador: Trabajador): Int {
         val valores = ContentValues().apply {
-            put(SolicitudContrato.COLUMNA_NOMBRE,solicitud.nombre)
-            put(SolicitudContrato.COLUMNA_DESCRIPCION,solicitud.descripcion)
-            put(SolicitudContrato.COLUMNA_CATEGORIA,solicitud.categoria)
-            put(SolicitudContrato.COLUMNA_PRIORIDAD,solicitud.prioridad)
-            put(SolicitudContrato.COLUMNA_RUTA_IMAGEN,solicitud.rutaImagen)
+            put(TrabajadorContrato.COLUMNA_NOMBRE,trabajador.nombre)
+            put(TrabajadorContrato.COLUMNA_SUELDO_BASE,trabajador.sueldoBase)
+            put(TrabajadorContrato.COLUMNA_BONO,trabajador.bono)
+            put(TrabajadorContrato.COLUMNA_PENSION,trabajador.pension)
+            put(TrabajadorContrato.COLUMNA_AREA,trabajador.area)
+            put(TrabajadorContrato.COLUMNA_SUELDO_TOTAL,trabajador.sueldoTotal)
         }
 
         //? es un marcador seguro: SQLite reemplaza su valor con selectionArgs y evita
         //concatenar directamente información dentro de la condición SQL
         return dbHelper.writableDatabase.update(
-            SolicitudContrato.TABLA_SOLICITUDES,
+            TrabajadorContrato.TABLA_TRABAJADORES,
             valores,
-            "${SolicitudContrato.COLUMNA_ID} = ?",
-            arrayOf(solicitud.id.toString())
+            "${TrabajadorContrato.COLUMNA_ID} = ?",
+            arrayOf(trabajador.id.toString())
         )
         // PRÁCTICA TEMA 6 - BLOQUE 4B (UPDATE):
         // 1. Crear ContentValues con los datos de solicitud.
@@ -127,8 +127,8 @@ class TrabajadorStore(context: Context) {
 
     fun eliminar(id: Int): Int {
         return dbHelper.writableDatabase.delete(
-            SolicitudContrato.TABLA_SOLICITUDES,
-            "${SolicitudContrato.COLUMNA_ID} = ?",
+            TrabajadorContrato.TABLA_TRABAJADORES,
+            "${TrabajadorContrato.COLUMNA_ID} = ?",
             arrayOf(id.toString())
         )
         // PRÁCTICA TEMA 6 - BLOQUE 4C (DELETE):
