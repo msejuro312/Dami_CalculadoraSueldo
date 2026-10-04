@@ -1,0 +1,41 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_name">TicketAula</string>
+    <string name="titulo_principal">Solicitudes del aula</string>
+    <string name="subtitulo_principal">Registre y consulte solicitudes de soporte de forma sencilla.</string>
+    <string name="boton_registro">Registrar</string>
+    <string name="boton_lista">Solicitudes</string>
+    <string name="registro_titulo">Nueva solicitud</string>
+    <string name="registro_descripcion">Complete los datos y seleccione una categoría y una prioridad.</string>
+    <string name="hint_nombre">Nombre del solicitante</string>
+    <string name="hint_descripcion">Descripción del problema</string>
+    <string name="label_categoria">Categoría</string>
+    <string name="categoria_equipo">Equipo</string>
+    <string name="categoria_software">Software</string>
+    <string name="categoria_internet">Internet</string>
+    <string name="categoria_otro">Otro</string>
+    <string name="label_prioridad">Prioridad</string>
+    <string name="prioridad_baja">Baja</string>
+    <string name="prioridad_media">Media</string>
+    <string name="prioridad_alta">Alta</string>
+    <string name="boton_agregar">Agregar solicitud</string>
+    <string name="error_nombre">Ingrese el nombre</string>
+    <string name="error_descripcion">Describa el problema con al menos 8 caracteres</string>
+    <string name="error_categoria">Seleccione una categoría</string>
+    <string name="error_prioridad">Seleccione una prioridad</string>
+    <string name="semaforo_estado_inicial">Semáforo: sin selección</string>
+    <string name="semaforo_estado_formato">Semáforo: %1$s</string>
+    <string name="lista_vacia">Aún no hay solicitudes registradas.</string>
+    <string name="codigo_inicial">Solicitud #0</string>
+    <string name="codigo_formato" tools:ignore="UnusedResources">Solicitud #%1$d</string>
+    <string name="nombre_inicial">Solicitante</string>
+    <string name="descripcion_inicial">Descripción</string>
+    <string name="categoria_inicial">Categoría</string>
+    <string name="categoria_formato" tools:ignore="UnusedResources">Categoría: %1$s</string>
+    <string name="dialogo_titulo_formato" tools:ignore="UnusedResources">Detalle de la solicitud #%1$d</string>
+    <string name="dialogo_titulo_inicial">Detalle de la solicitud</string>
+    <string name="dialogo_label_solicitante">SOLICITANTE</string>
+    <string name="dialogo_label_problema">PROBLEMA</string>
+    <string name="dialogo_label_categoria">CATEGORÍA</string>
+    <string name="dialogo_label_prioridad">PRIORIDAD</string>
+    <string name="dialogo_boton_aceptar" tools:ignore="UnusedResources">Entendido</string>
+</resources>
