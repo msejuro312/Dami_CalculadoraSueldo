@@ -4,16 +4,25 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.cibertec.calculadorasueldo.MainActivity
 import com.cibertec.calculadorasueldo.R
-import com.cibertec.calculadorasueldo.data.SolicitudStore
+import com.cibertec.calculadorasueldo.data.TrabajadorStore
 import com.cibertec.calculadorasueldo.databinding.FragmentRegistroBinding
 
 class RegistroFragment : Fragment() {
 
     private var _binding: FragmentRegistroBinding? = null
     private val binding get() = _binding!!
+
+    private lateinit var trabajadorStore: TrabajadorStore
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        trabajadorStore = TrabajadorStore(requireContext().applicationContext)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -26,25 +35,75 @@ class RegistroFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        configurarSelectorCategoria()
-        configurarSemaforoPrioridad()
-        binding.buttonAgregar.setOnClickListener {
-            registrarSolicitud()
+        configurarSpinnerArea()
+
+        binding.buttonCalcular.setOnClickListener {
+            calcular()
         }
     }
 
-    private fun registrarSolicitud() {
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    private fun configurarSpinnerArea() {
+        binding.spinnerArea.adapter = ArrayAdapter.createFromResource(
+            requireContext(),
+            R.array.areas,
+            R.layout.spinner_area_item
+        )
+    }
+
+    private fun obtenerAreaSeleccionada(): String? {
+        if (binding.spinnerArea.selectedItemPosition == 0) return null
+        return binding.spinnerArea.selectedItem?.toString()
+    }
+
+    private fun obtenerPensionSeleccionada(): String? {
+        return when (binding.radioGroupPension.checkedRadioButtonId) {
+            R.id.radioAfp -> getString(R.string.pension_afp)
+            R.id.radioOnp -> getString(R.string.pension_onp)
+            else -> null
+        }
+    }
+
+    private fun calcularSueldoTotal(sueldoBase: Double, bono: Double, pension: String): Double {
+        return when (pension) {
+            getString(R.string.pension_afp) -> sueldoBase - sueldoBase * 0.10 + bono
+            getString(R.string.pension_onp) -> sueldoBase - sueldoBase * 0.13 + bono
+            else -> 0.0
+        }
+    }
+
+    private fun limpiarFormulario() {
+        binding.inputLayoutNombre.error = null
+        binding.inputLayoutSueldoBase.error = null
+        binding.inputLayoutBono.error = null
+        binding.textViewErrorArea.visibility = View.GONE
+        binding.textViewErrorPension.visibility = View.GONE
+        binding.editTextNombre.text?.clear()
+        binding.editTextSueldoBase.text?.clear()
+        binding.editTextBono.text?.clear()
+        binding.spinnerArea.setSelection(0)
+        binding.radioGroupPension.clearCheck()
+
+    }
+
+    private fun calcular() {
         val nombre = binding.editTextNombre.text.toString().trim()
-        val descripcion = binding.editTextDescripcion.text.toString().trim()
-        val categoria = obtenerCategoriaSeleccionada()
-        val prioridad = obtenerPrioridadSeleccionada()
+        val textoSueldoBase = binding.editTextSueldoBase.text.toString()
+        val textoBono = binding.editTextBono.text.toString()
+        val area = obtenerAreaSeleccionada()
+        val pension = obtenerPensionSeleccionada()
+        val sueldoBase = textoSueldoBase.replace(",", ".").toDoubleOrNull()
+        val bono = textoBono.replace(",", ".").toDoubleOrNull()
 
         binding.inputLayoutNombre.error = null
-
-        //limpia el campo ante el error
-        binding.inputLayoutDescripcion.error = null
-        binding.inputLayoutCategoria.error = null
-        binding.textViewErrorPrioridad.visibility = View.GONE
+        binding.inputLayoutSueldoBase.error = null
+        binding.inputLayoutBono.error = null
+        binding.textViewErrorArea.visibility = View.GONE
+        binding.textViewErrorPension.visibility = View.GONE
 
         var formularioValido = true
 
@@ -53,95 +112,49 @@ class RegistroFragment : Fragment() {
             formularioValido = false
         }
 
-        if (descripcion.length < LONGITUD_MINIMA_DESCRIPCION) {
-            binding.inputLayoutDescripcion.error = getString(R.string.error_descripcion)
+        if (sueldoBase == null || sueldoBase <= 0) {
+            binding.inputLayoutSueldoBase.error = getString(R.string.error_sueldo_base)
             formularioValido = false
         }
 
-        if (categoria == null) {
-            binding.inputLayoutCategoria.error = getString(R.string.error_categoria)
+        if (bono == null || bono < 0) {
+            binding.inputLayoutBono.error = getString(R.string.error_bono)
             formularioValido = false
         }
 
-        if (prioridad == null) {
-            binding.textViewErrorPrioridad.visibility = View.VISIBLE
+        if (area == null) {
+            binding.textViewErrorArea.visibility = View.VISIBLE
             formularioValido = false
         }
 
-        if (!formularioValido || categoria == null || prioridad == null) {
+        if (pension == null) {
+            binding.textViewErrorPension.visibility = View.VISIBLE
+            formularioValido = false
+        }
+
+        if (!formularioValido || sueldoBase == null || bono == null || area == null || pension == null) {
             return
         }
 
-        SolicitudStore.agregar(nombre, descripcion, categoria, prioridad)
-        limpiarFormulario()
-        (activity as? MainActivity)?.abrirLista()
-    }
+        val sueldoTotal = calcularSueldoTotal(sueldoBase, bono, pension)
 
-    private fun obtenerPrioridadSeleccionada(): String? {
-        // PRÁCTICA EN CLASE:
-        // Utilizar when para convertir el RadioButton seleccionado en un texto.
-        // Si no existe selección, se debe devolver null.
-        //When evalua varios varios casos -> separa cada condición del resultado que devuelve
-
-        return when (binding.radioGroupPrioridad.checkedRadioButtonId){
-            R.id.radioPrioridadBaja -> getString(R.string.prioridad_baja)
-            R.id.radioPrioridadMedia -> getString(R.string.prioridad_media)
-            R.id.radioPrioridadAlta -> getString(R.string.prioridad_alta)
-            else -> null
-        }
-
-    }
-
-    private fun obtenerCategoriaSeleccionada(): String? {
-        return binding.autoCompleteCategoria.text
-            .toString()
-            .takeIf { categoria -> categoria.isNotBlank() }
-    }
-
-    private fun configurarSelectorCategoria() {
-        binding.autoCompleteCategoria.setSimpleItems(R.array.categorias)
-        binding.autoCompleteCategoria.setOnItemClickListener { _, _, _, _ ->
-            binding.inputLayoutCategoria.error = null
-        }
-    }
-
-    private fun configurarSemaforoPrioridad() {
-        binding.radioGroupPrioridad.setOnCheckedChangeListener { _, _ ->
-            val prioridad = obtenerPrioridadSeleccionada()
-            if (prioridad != null) {
-                actualizarSemaforo(prioridad)
-                binding.textViewErrorPrioridad.visibility = View.GONE
+        Thread {
+            val idInsertado =
+                trabajadorStore.agregar(nombre, sueldoBase, bono, pension, area, sueldoTotal)
+            activity?.runOnUiThread {
+                if (_binding == null) return@runOnUiThread
+                if (idInsertado == -1L) {
+                    Toast.makeText(
+                        requireContext(),
+                        R.string.error_guardar_trabajador,
+                        Toast.LENGTH_LONG
+                    ).show()
+                } else {
+                    limpiarFormulario()
+                    (activity as? MainActivity)?.abrirLista()
+                }
             }
-        }
-    }
+        }.start()
 
-    private fun actualizarSemaforo(prioridad: String) {
-        val fondoSemaforo = when (prioridad) {
-            getString(R.string.prioridad_baja) -> R.drawable.bg_semaforo_verde
-            getString(R.string.prioridad_media) -> R.drawable.bg_semaforo_amarillo
-            getString(R.string.prioridad_alta) -> R.drawable.bg_semaforo_rojo
-            else -> R.drawable.bg_semaforo_neutro
-        }
-        binding.viewSemaforo.setBackgroundResource(fondoSemaforo)
-        binding.textViewSemaforoEstado.text =
-            getString(R.string.semaforo_estado_formato, prioridad)
-    }
-
-    private fun limpiarFormulario() {
-        binding.editTextNombre.text?.clear()
-        binding.editTextDescripcion.text?.clear()
-        binding.autoCompleteCategoria.setText(null, false)
-        binding.radioGroupPrioridad.clearCheck()
-        binding.viewSemaforo.setBackgroundResource(R.drawable.bg_semaforo_neutro)
-        binding.textViewSemaforoEstado.text = getString(R.string.semaforo_estado_inicial)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-
-    companion object {
-        private const val LONGITUD_MINIMA_DESCRIPCION = 8
     }
 }

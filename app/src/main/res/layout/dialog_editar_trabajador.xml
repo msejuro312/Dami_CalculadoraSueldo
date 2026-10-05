@@ -2,50 +2,32 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_surface_panel"
         android:orientation="vertical"
-        android:padding="@dimen/card_padding">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/registro_titulo"
-            android:textColor="@color/azul_oscuro"
-            android:textSize="@dimen/text_section"
-            android:textStyle="bold" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/gap_small"
-            android:text="@string/registro_descripcion"
-            android:textColor="@color/gris_texto"
-            android:textSize="@dimen/text_body" />
+        android:padding="@dimen/dialog_padding">
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/inputLayoutNombre"
+            android:id="@+id/inputLayoutNombreEditar"
             style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/gap_large"
+            android:layout_marginTop="@dimen/gap_medium"
             android:hint="@string/hint_nombre">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/editTextNombre"
+                android:id="@+id/editTextNombreEditar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:autofillHints="personName"
                 android:inputType="textCapWords" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/inputLayoutSueldoBase"
+            android:id="@+id/inputLayoutSueldoBaseEditar"
             style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -54,7 +36,7 @@
             app:suffixText="@string/sueldo_moneda">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/editTextSueldoBase"
+                android:id="@+id/editTextSueldoBaseEditar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:importantForAutofill="no"
@@ -62,7 +44,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/inputLayoutBono"
+            android:id="@+id/inputLayoutBonoEditar"
             style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -71,7 +53,7 @@
             app:suffixText="@string/sueldo_moneda">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/editTextBono"
+                android:id="@+id/editTextBonoEditar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:importantForAutofill="no"
@@ -81,73 +63,64 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/gap_large"
+            android:layout_marginTop="@dimen/gap_medium"
             android:text="@string/label_pension"
             android:textColor="@color/azul_oscuro"
             android:textSize="@dimen/text_body"
-            android:textStyle="bold"/>
+            android:textStyle="bold" />
 
         <RadioGroup
-            android:id="@+id/radioGroupPension"
+            android:id="@+id/radioGroupPensionEditar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <com.google.android.material.radiobutton.MaterialRadioButton
-                android:id="@+id/radioAfp"
+                android:id="@+id/radioAfpEditar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/pension_afp" />
 
             <com.google.android.material.radiobutton.MaterialRadioButton
-                android:id="@+id/radioOnp"
+                android:id="@+id/radioOnpEditar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/pension_onp" />
-
         </RadioGroup>
 
         <TextView
-            android:id="@+id/textViewErrorPension"
+            android:id="@+id/textViewErrorPensionEditar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/error_pension"
             android:textColor="@color/error"
             android:textSize="@dimen/text_caption"
-            android:visibility="gone"/>
+            android:visibility="gone" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/gap_large"
+            android:layout_marginTop="@dimen/gap_medium"
+            android:labelFor="@id/autoCompleteAreaEditar"
             android:text="@string/label_area"
             android:textColor="@color/azul_oscuro"
             android:textSize="@dimen/text_body"
-            android:textStyle="bold"/>
+            android:textStyle="bold" />
 
-        <Spinner
-            android:id="@+id/spinnerArea"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/inputLayoutAreaEditar"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/gap_small"
-            android:spinnerMode="dropdown"/>
+            app:endIconMode="dropdown_menu">
 
-        <TextView
-            android:id="@+id/textViewErrorArea"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/error_area"
-            android:textColor="@color/error"
-            android:textSize="@dimen/text_caption"
-            android:visibility="gone" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/buttonCalcular"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/button_height"
-            android:layout_marginTop="@dimen/gap_large"
-            android:text="@string/boton_calcular"
-            android:textAllCaps="false"
-            android:textStyle="bold" />
+            <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                android:id="@+id/autoCompleteAreaEditar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:importantForAutofill="no"
+                android:inputType="none" />
+        </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
 </ScrollView>

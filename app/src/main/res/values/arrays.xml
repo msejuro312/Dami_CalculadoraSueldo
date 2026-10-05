@@ -1,8 +1,8 @@
 <resources>
-    <string-array name="categorias">
-        <item>@string/categoria_equipo</item>
-        <item>@string/categoria_software</item>
-        <item>@string/categoria_internet</item>
-        <item>@string/categoria_otro</item>
+    <string-array name="areas">
+        <item>@string/area_placeholder</item>
+        <item>@string/area_gerencia</item>
+        <item>@string/area_administracion</item>
+        <item>@string/area_operaciones</item>
     </string-array>
 </resources>

@@ -6,7 +6,7 @@
     android:padding="@dimen/card_padding">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewSolicitudes"
+        android:id="@+id/recyclerViewTrabajadores"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
